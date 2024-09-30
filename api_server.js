@@ -3,7 +3,8 @@ const express = require('express');
 const { Client } = require('pg');
 
 const app = express();
-const port = 5555;
+const server_port = 3000;
+const db_port = 5555;
 
 // JSON 요청 본문을 파싱하기 위한 미들웨어
 app.use(express.json());
@@ -14,7 +15,7 @@ const client = new Client({
   host: 'localhost',
   database: 'test_database',
   password: '1234',
-  port: 5555,
+  port: db_port,
 });
 
 // 클라이언트 연결
