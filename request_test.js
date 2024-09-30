@@ -1,4 +1,3 @@
-const http = require('http')
 const query_counter = process.argv[2] ? parseInt(process.argv[2], 10) || null : null
 if (query_counter === null) {
   console.log('\nUsage: node request_test.js <number of queries>\n')
