@@ -2,7 +2,7 @@
 // 시간차이 테이블 저장
 // 파라미터/시작타임/끝타임/걸린시간
 const express = require('express');
-const { Pool } = require('pg');
+const { Client } = require('pg');
 
 const app = express();
 const server_port = 3000;
@@ -14,18 +14,6 @@ const date_to_str=(date) => {
 // JSON 요청 본문을 파싱하기 위한 미들웨어
 app.use(express.json());
 
-// PostgreSQL 클라이언트 설정
-const client = new Pool({
-  user: 'gutest',
-  host: 'localhost',
-  database: 'test_database',
-  password: '1234',
-  port: db_port,
-  max:100,
-});
-
-// 클라이언트 연결
-// client.connect().catch(err => console.error('Connection error', err.stack));
 
 // SQL 쿼리 실행 API
 app.post('/execute-sql', async (req, res) => {
@@ -33,18 +21,28 @@ app.post('/execute-sql', async (req, res) => {
   const test_seq=req.query.seq || null;
   const sql = req.body.sql;
   
+  // 클라이언트 연결
+  // client.connect().catch(err => console.error('Connection error', err.stack));
+
+  // PostgreSQL 클라이언트 설정
+  const client = new Client({
+    user: 'gutest',
+    host: 'localhost',
+    database: 'test_database',
+    password: '1234',
+    port: db_port,
+  });
 
   try {
-    //시작
+    await client.connect();
+
     const start_time = new Date();
     console.log('Start time:', start_time);
 
-    //쿼리
     const result = await client.query(sql);
-    console.log('Query result:', result.rows);
+    // console.log('Query result:', result.rows);
     res.json(result.rows);
 
-    //종료
     const end_time = new Date();
     console.log('End time:', end_time);
 
@@ -55,7 +53,9 @@ app.post('/execute-sql', async (req, res) => {
   } catch (err) {
     console.error('Error executing SQL:', err);
     res.status(500).send('Error executing SQL query');
-  } 
+  } finally{
+    await client.end();
+  }
 });
 
 // 서버 시작

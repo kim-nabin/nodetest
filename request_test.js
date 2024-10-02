@@ -5,6 +5,7 @@ if (test_title === null || query_counter === null) {
   process.exit(1)
 }
 
+const padZero = (num, zeros) => String(num).padStart(zeros, '0')
 
 const data = {
   sql: `
@@ -43,7 +44,7 @@ const options = {
 
 for (let i = 0; i < query_counter; i++) {
   // try {
-    const searchParams = `title=${test_title}&seq=sec${i}`
+    const searchParams = `title=${test_title}&seq=${padZero(i+1, 4)}`
     const url = encodeURI(`http://localhost:3000/execute-sql?${searchParams}`)
     fetch(url, options).catch(err => console.error(`Error: sequence ${i+1}`))
     console.log(`request send : seq no ${i+1}`)
