@@ -8,6 +8,9 @@ const app = express();
 const server_port = 3000;
 const db_port = 5555;
 
+const date_to_str=(date) => {
+  return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+}
 // JSON 요청 본문을 파싱하기 위한 미들웨어
 app.use(express.json());
 
@@ -25,6 +28,8 @@ client.connect().catch(err => console.error('Connection error', err.stack));
 
 // SQL 쿼리 실행 API
 app.post('/execute-sql', async (req, res) => {
+  const test_title=req.query.title ||null;
+  const test_seq=req.query.seq || null;
   const sql = req.body.sql;
   
 
@@ -37,6 +42,9 @@ app.post('/execute-sql', async (req, res) => {
     const end_time = new Date();
     console.log('End time:', end_time);
     console.log('Execution time:', (end_time - start_time)/1000);
+
+    const logsql=`INSERT INTO api_testtable (test_title, start_time, end_time, execution_time) VALUES ('${test_title}_${test_seq}', '${date_to_str(start_time)}', '${date_to_str(end_time)}', ${(end_time - start_time)/1000});`
+    await client.query(logsql);
   } catch (err) {
     console.error('Error executing SQL:', err);
     res.status(500).send('Error executing SQL query');

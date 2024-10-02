@@ -1,8 +1,11 @@
-const query_counter = process.argv[2] ? parseInt(process.argv[2], 10) || null : null
-if (query_counter === null) {
-  console.log('\nUsage: node request_test.js <number of queries>\n')
+const test_title= process.argv[2]? process.argv[2] : null
+const query_counter = process.argv[3] ? parseInt(process.argv[3], 10) || null : null
+if (test_title === null || query_counter === null) {
+  console.log('\nUsage: node request_test.js <test title> <number of queries>\n')
   process.exit(1)
 }
+
+
 const data = {
   sql: `
       SELECT 
@@ -40,7 +43,7 @@ const options = {
 
 for (let i = 0; i < query_counter; i++) {
   // try {
-    const searchParams = `q=sec${i}`
+    const searchParams = `title=${test_title}&seq=sec${i}`
     const url = encodeURI(`http://localhost:3000/execute-sql?${searchParams}`)
     fetch(url, options).catch(err => console.error(`Error: sequence ${i+1}`))
     console.log(`request send : seq no ${i+1}`)
