@@ -38,7 +38,7 @@ app.post('/execute-sql', async (req, res) => {
 
     //쿼리
     const result = await client.query(sql);
-    console.log('Query result:', result.rows);
+    // console.log('Query result:', result.rows);
     res.json(result.rows);
 
     //종료
@@ -58,4 +58,4 @@ app.post('/execute-sql', async (req, res) => {
 // 서버 시작
 app.listen(server_port, () => {
   console.log(`API server running at http://localhost:${server_port}`);
-});
+})
